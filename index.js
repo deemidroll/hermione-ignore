@@ -27,6 +27,13 @@ module.exports = (hermione, opts = {}) => {
                 );
             });
 
+            // Remove captured selector from all types of ignore.
+            Object.keys(options).forEach(prop => {
+                if (Array.isArray(options[prop])) {
+                    options[prop] = options[prop].filter(selectorInside => selectorInside !== selector)
+                }
+            });
+
             let styleString = '';
 
             if (options.hideElements.length) {
