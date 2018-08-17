@@ -17,13 +17,23 @@ module.exports = (hermione, opts = {}) => {
 
         browser.addCommand('assertView', (name, selector, options = {}) => {
             options.excludeElements = normalize(options.excludeElements);
-
+            
             // Merge global and local selectors without excluded selectors.
-            ['ignoreElements', 'hideElements', 'invisibleElements'].forEach(prop => {
+            ['ignoreElements', 'hideElements', 'invisibleElements'].forEach((prop, index, arr) => {
                 options[prop] = merge(
-                    globalIgnore[prop],
+                    globalIgnore[`${prop}Elements`],
                     normalize(options[prop]),
-                    options.excludeElements
+                    // Удалить из глобального игнора:
+                    // - явно переданные исключения
+                    // - селектор, который скриншотится
+                    // - другие виды игнора
+                    [].concat(
+                        options.excludeElements,
+                        options.selector,
+                        arr.reduce((acc, p) => {
+                            return p !== prop ? acc.concat(options[p]) : acc;
+                        }, [])
+                    )
                 );
             });
 
