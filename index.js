@@ -27,6 +27,10 @@ module.exports = (hermione, opts = {}) => {
                 );
             });
 
+            Object.keys(options).forEach(prop => {
+                options[prop] = options[prop].filter(selectorInside => selectorInside !== selector)
+            });
+
             let styleString = '';
 
             if (options.hideElements.length) {
