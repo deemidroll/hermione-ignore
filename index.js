@@ -17,14 +17,9 @@ module.exports = (hermione, opts = {}) => {
 
         browser.addCommand('assertView', (name, selector, options = {}) => {
             options.excludeElements = normalize(options.excludeElements);
-
-            // Merge global and local selectors without excluded selectors.
-            ['ignoreElements', 'hideElements', 'invisibleElements'].forEach(prop => {
-                options[prop] = merge(
-                    globalIgnore[prop],
-                    normalize(options[prop]),
-                    options.excludeElements
-                );
+            
+            Object.keys(options).forEach(prop => {
+                options[prop] = options[prop].filter(selectorInside => selectorInside !== selector)
             });
 
             let styleString = '';
